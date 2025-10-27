@@ -14,7 +14,7 @@ from datetime import datetime
 # Global variable
 stock_data = {}
 
-def addItem(item="default", qty=0, logs=None):
+def add_item(item="default", qty=0, logs=None):
     """Add qty of an item to the global inventory.
 
     Parameters:
@@ -71,9 +71,9 @@ def checkLowItems(threshold=5):
     return result
 
 def main():
-    addItem("apple", 10)
-    addItem("banana", -2)
-    addItem(123, "ten")  # invalid types, no check
+    add_item("apple", 10)
+    add_item("banana", -2)
+    add_item(123, "ten")  # invalid types, no check
     removeItem("apple", 3)
     removeItem("orange", 1)
     print("Apple stock:", getQty("apple"))
