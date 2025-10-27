@@ -1,3 +1,12 @@
+"""
+inventory_system.py
+
+Simple, educational inventory management functions used in static code
+analysis exercises. This module intentionally contains simplified and unsafe
+patterns (mutable default arguments, eval usage, bare except) for teaching
+purposes — do not use as-is in production.
+"""
+
 import json
 import logging
 from datetime import datetime
