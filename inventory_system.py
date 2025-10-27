@@ -11,6 +11,8 @@ import json
 from datetime import datetime
 
 # Global variable
+
+
 stock_data = {}
 
 
@@ -36,6 +38,7 @@ def add_item(item="default", qty=0, logs=None):
     if logs is not None:
         logs.append(f"{datetime.now()}: Added {qty} of {item}")
 
+
 def remove_item(item, qty):
     """Remove ``qty`` of ``item`` from the inventory.
 
@@ -47,13 +50,16 @@ def remove_item(item, qty):
         stock_data[item] -= qty
         if stock_data[item] <= 0:
             del stock_data[item]
+
     except KeyError:
         # Item not present — nothing to remove
         pass
 
+
 def get_qty(item):
     """Return the quantity for ``item`` or 0 if the item is missing."""
     return stock_data.get(item, 0)
+
 
 def load_data(file="inventory.json"):
     """Load inventory from a JSON file into the in-memory store.
@@ -72,16 +78,19 @@ def load_data(file="inventory.json"):
         stock_data.clear()
         stock_data.update(data)
 
+
 def save_data(file="inventory.json"):
     """Save the in-memory inventory to a JSON file using UTF-8."""
     with open(file, "w", encoding="utf-8") as f:
         json.dump(stock_data, f, ensure_ascii=False, indent=2)
+
 
 def print_data():
     """Print a simple inventory report to stdout."""
     print("Items Report")
     for i, q in stock_data.items():
         print(i, "->", q)
+
 
 def check_low_items(threshold=5):
     """Return a list of items whose quantity is below ``threshold``."""
@@ -90,6 +99,7 @@ def check_low_items(threshold=5):
         if q < threshold:
             result.append(i)
     return result
+
 
 def main():
     """Run a short example demonstrating basic inventory operations."""
