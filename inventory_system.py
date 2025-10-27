@@ -14,6 +14,7 @@ from datetime import datetime
 # Global variable
 stock_data = {}
 
+
 def add_item(item="default", qty=0, logs=None):
     """Add qty of an item to the global inventory.
 
@@ -34,7 +35,7 @@ def add_item(item="default", qty=0, logs=None):
         return
     stock_data[item] = stock_data.get(item, 0) + qty
     if logs is not None:
-        logs.append("%s: Added %d of %s" % (str(datetime.now()), qty, item))
+        logs.append(f"{datetime.now()}: Added {qty} of {item}")
 
 def removeItem(item, qty):
     try:
