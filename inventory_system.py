@@ -8,7 +8,6 @@ purposes — do not use as-is in production.
 """
 
 import json
-import logging
 from datetime import datetime
 
 # Global variable
@@ -37,51 +36,74 @@ def add_item(item="default", qty=0, logs=None):
     if logs is not None:
         logs.append(f"{datetime.now()}: Added {qty} of {item}")
 
-def removeItem(item, qty):
+def remove_item(item, qty):
+    """Remove ``qty`` of ``item`` from the inventory.
+
+    If the item does not exist the function returns silently. If the
+    resulting quantity is less than or equal to zero the item is removed
+    from the store.
+    """
     try:
         stock_data[item] -= qty
         if stock_data[item] <= 0:
             del stock_data[item]
-    except:
+    except KeyError:
+        # Item not present — nothing to remove
         pass
 
-def getQty(item):
-    return stock_data[item]
+def get_qty(item):
+    """Return the quantity for ``item`` or 0 if the item is missing."""
+    return stock_data.get(item, 0)
 
-def loadData(file="inventory.json"):
-    f = open(file, "r")
-    global stock_data
-    stock_data = json.loads(f.read())
-    f.close()
+def load_data(file="inventory.json"):
+    """Load inventory from a JSON file into the in-memory store.
 
-def saveData(file="inventory.json"):
-    f = open(file, "w")
-    f.write(json.dumps(stock_data))
-    f.close()
+    If the file does not exist the function does nothing. The existing
+    ``stock_data`` dictionary is updated rather than rebound so external
+    references keep working.
+    """
+    try:
+        with open(file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        return
 
-def printData():
+    if isinstance(data, dict):
+        stock_data.clear()
+        stock_data.update(data)
+
+def save_data(file="inventory.json"):
+    """Save the in-memory inventory to a JSON file using UTF-8."""
+    with open(file, "w", encoding="utf-8") as f:
+        json.dump(stock_data, f, ensure_ascii=False, indent=2)
+
+def print_data():
+    """Print a simple inventory report to stdout."""
     print("Items Report")
-    for i in stock_data:
-        print(i, "->", stock_data[i])
+    for i, q in stock_data.items():
+        print(i, "->", q)
 
-def checkLowItems(threshold=5):
+def check_low_items(threshold=5):
+    """Return a list of items whose quantity is below ``threshold``."""
     result = []
-    for i in stock_data:
-        if stock_data[i] < threshold:
+    for i, q in stock_data.items():
+        if q < threshold:
             result.append(i)
     return result
 
 def main():
+    """Run a short example demonstrating basic inventory operations."""
     add_item("apple", 10)
     add_item("banana", -2)
-    add_item(123, "ten")  # invalid types, no check
-    removeItem("apple", 3)
-    removeItem("orange", 1)
-    print("Apple stock:", getQty("apple"))
-    print("Low items:", checkLowItems())
-    saveData()
-    loadData()
-    printData()
-    eval("print('eval used')")  # dangerous
+    # add_item(123, "ten")  # invalid types, no check (left commented)
+    remove_item("apple", 3)
+    remove_item("orange", 1)
+    print("Apple stock:", get_qty("apple"))
+    print("Low items:", check_low_items())
+    save_data()
+    load_data()
+    print_data()
 
-main()
+
+if __name__ == "__main__":
+    main()
