@@ -14,11 +14,27 @@ from datetime import datetime
 # Global variable
 stock_data = {}
 
-def addItem(item="default", qty=0, logs=[]):
+def addItem(item="default", qty=0, logs=None):
+    """Add qty of an item to the global inventory.
+
+    Parameters:
+        item: Item name to add. If falsy, the function returns without change.
+        qty: Quantity to add (may be negative to subtract).
+        logs: Optional list to append a human-readable log entry. If None,
+            no log is recorded.
+
+    Side effects:
+        Mutates the module-level `stock_data` dictionary and appends to
+        `logs` if a list is provided.
+
+    Returns:
+        None
+    """
     if not item:
         return
     stock_data[item] = stock_data.get(item, 0) + qty
-    logs.append("%s: Added %d of %s" % (str(datetime.now()), qty, item))
+    if logs is not None:
+        logs.append("%s: Added %d of %s" % (str(datetime.now()), qty, item))
 
 def removeItem(item, qty):
     try:
